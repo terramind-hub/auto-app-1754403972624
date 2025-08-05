@@ -1,15 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import HomeView from './views/HomeView'
 import SearchView from './views/SearchView'
 import LibraryView from './views/LibraryView'
 import PlaylistView from './views/PlaylistView'
 import AlbumView from './views/AlbumView'
 import ArtistView from './views/ArtistView'
-import LikedSongsView from './views/LikedSongsView'
-import RecentlyPlayedView from './views/RecentlyPlayedView'
-import Header from './Header'
 
 interface MainContentProps {
   currentView: string
@@ -28,18 +26,16 @@ export default function MainContent({
   selectedPlaylist,
   selectedAlbum,
   selectedArtist,
-  onNavigate,
+  onNavigate
 }: MainContentProps) {
-  const [showUserMenu, setShowUserMenu] = useState(false)
-
-  const renderView = () => {
+  const renderContent = () => {
     switch (currentView) {
       case 'home':
         return <HomeView onNavigate={onNavigate} />
       case 'search':
         return (
           <SearchView 
-            searchQuery={searchQuery} 
+            searchQuery={searchQuery}
             onSearchChange={onSearchChange}
             onNavigate={onNavigate}
           />
@@ -48,46 +44,39 @@ export default function MainContent({
         return <LibraryView onNavigate={onNavigate} />
       case 'playlist':
         return selectedPlaylist ? (
-          <PlaylistView playlistId={selectedPlaylist} onNavigate={onNavigate} />
+          <PlaylistView 
+            playlistId={selectedPlaylist}
+            onNavigate={onNavigate}
+          />
         ) : (
-          <div className="p-8 text-center text-gray-400">Playlist not found</div>
+          <LibraryView onNavigate={onNavigate} />
         )
       case 'album':
         return selectedAlbum ? (
-          <AlbumView albumId={selectedAlbum} onNavigate={onNavigate} />
+          <AlbumView 
+            albumId={selectedAlbum}
+            onNavigate={onNavigate}
+          />
         ) : (
-          <div className="p-8 text-center text-gray-400">Album not found</div>
+          <HomeView onNavigate={onNavigate} />
         )
       case 'artist':
         return selectedArtist ? (
-          <ArtistView artistId={selectedArtist} onNavigate={onNavigate} />
+          <ArtistView 
+            artistId={selectedArtist}
+            onNavigate={onNavigate}
+          />
         ) : (
-          <div className="p-8 text-center text-gray-400">Artist not found</div>
+          <HomeView onNavigate={onNavigate} />
         )
-      case 'liked':
-        return <LikedSongsView />
-      case 'recent':
-        return <RecentlyPlayedView />
       default:
         return <HomeView onNavigate={onNavigate} />
     }
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-      <Header 
-        currentView={currentView}
-        searchQuery={searchQuery}
-        onSearchChange={onSearchChange}
-        showUserMenu={showUserMenu}
-        onToggleUserMenu={() => setShowUserMenu(!showUserMenu)}
-      />
-      
-      <main className="flex-1 overflow-y-auto px-4 md:px-8 pb-4">
-        <div className="max-w-7xl mx-auto">
-          {renderView()}
-        </div>
-      </main>
-    </div>
+    <main className="flex-1 bg-gradient-to-b from-gray-900 to-black overflow-y-auto">
+      {renderContent()}
+    </main>
   )
 }
